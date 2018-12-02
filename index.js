@@ -1,5 +1,5 @@
 const http = require('http');
-const path = require('path');
+const path = require('path');   
 const url = require('url');
 const ecstatic = require('ecstatic')({
 	root: path.join(__dirname,'/public'),
