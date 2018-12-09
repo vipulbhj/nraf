@@ -2,8 +2,10 @@
 First things first, if you can think of a better name, please open up an issue and rename this thing because I personally hate this name but I am out of thoughts.   
 
 # TL;DR
-*__The motivation for this came from the constant news of issues with npm ecosystem. As it started catching fire, I tried taking a look inside the express git repo and it was very intimidating, thus I started building this to get ideas on how things might work and come up with implementations of the features from popular frameworks. Soon I realized that there is a huge lack of content for creating apps using node without any framework. Thus I decided to document everything as I go by learning and exploring new concepts and packages which can be used to make node app without any Framework__*
+*The motivation for this came from the constant news of issues with npm ecosystem. As this started catching fire, I tried talking a look inside the express git repo and it was very intmedating, thus I started build this to get ideas on how things might work and come up with implementations of the features from popular frameworks. Soon I realized that there is a huge lack of content for creating apps using node without any framwork. Thus I decided to document everything as I go by learning and exploring new concepts and packages which can be used to make node app without any Framework*
 
+
+## Ooh, btw I built a website using this, which is available [here](https://intense-dusk-47643.herokuapp.com/).
 
 ### Why:-
 This project is aimed at learning some internals of designing a functional framework similar to the likes of express, sails, etc build most to the tools and features myself.
@@ -16,6 +18,7 @@ This project is aimed at learning some internals of designing a functional frame
     * Promises, Streams, etc.
     * Some third party modules
     * Build apps using node, not some framework.
+    * Teaching example or case study.
 
 ## Issues, Suggestions and Other things:-
 Pull Requests for anything of the above are appreciated and welcomed immensely.   
