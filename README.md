@@ -1,8 +1,19 @@
 ## Not-Really-A-Framework
-First things first, if you can think of a better name, please open up an issue and rename this thing because I personally hate this name but I am out of thoughts.   
+First things first, if you can think of a better name, please open up an issue and rename this thing because I personally hate this name but I am out of thoughts. __*"Index.js" file in the root directory serves as an example usage*.__
 
 # TL;DR
 *The motivation for this came from the constant news of issues with npm ecosystem. As this started catching fire, I tried talking a look inside the express git repo and it was very intmedating, thus I started build this to get ideas on how things might work and come up with implementations of the features from popular frameworks. Soon I realized that there is a huge lack of content for creating apps using node without any framwork. Thus I decided to document everything as I go by learning and exploring new concepts and packages which can be used to make node app without any Framework*
+
+
+### Features Available :- 
+* Create app using the NRAF object.
+* Supports get requests.
+* Can write headers and send responses.
+
+### Coming Soon:- 
+* Support for post requests.
+* Better API to interact with request and response.
+* Additional Features ...
 
 
 ## Ooh, btw I built a website using this, which is available [here](https://intense-dusk-47643.herokuapp.com/).
