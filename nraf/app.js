@@ -1,3 +1,5 @@
+"use strict"
+
 const http = require('http');   
 const url = require('url');
 const path = require('path');
@@ -13,19 +15,19 @@ class App {
         this.app = http.createServer((req, res) => {
             
             // Parsing and Logging endpoint on console.
-            const URL = url.parse(req.url, true).pathname;
-            console.log(`Endpoint -> ${URL} called`);
+            const URL = url.parse(req.url, true);
+            console.log(`Endpoint -> ${URL.pathname} called`);
 
-            // Adding Headers and modifying req and response object
             // |----> For user to get parsed url in handler
-            req.url = URL;
+            req.url = URL.pathname;
+	    req.query = URL.query;
             
             // Header for fun
             res.setHeader('Client', 'Not-Really-A-Framework');
             res.setHeader('charset', 'utf-8');
             
             // Matching and Routing
-            let m = this.match(this.router, URL);
+            let m = this.match(this.router, URL.pathname);
             m(req, res);
         });
     }
