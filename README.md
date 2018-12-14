@@ -5,8 +5,8 @@ First things first, if you can think of a better name, please open up an issue a
 1 Clone this repo.    
 2 Go to the root directory of this repo.      
 3 Open up terminal/command prompt in the root directory of this repo.   
-4 Run `npm install`
-5 Run `node index.js`      
+4 Run `npm install`            
+5 Run `node index.js`             
 6 Go to `localhost:5000` in your browser to start playing around.              
 
 # TL;DR
