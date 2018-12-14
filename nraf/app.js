@@ -3,6 +3,7 @@
 const http = require('http');   
 const url = require('url');
 const path = require('path');
+const typeBasedParser = require('./helper');
 const ecstatic = require('ecstatic')({
 	root: path.join(__dirname,'../public'),
 	showDir: false,
@@ -20,21 +21,35 @@ class App {
 
             // |----> For user to get parsed url in handler
             req.url = URL.pathname;
-	    req.query = URL.query;
+	    	req.query = URL.query;
             
             // Header for fun
             res.setHeader('Client', 'Not-Really-A-Framework');
-            res.setHeader('charset', 'utf-8');
-            
-            // Matching and Routing
-            let m = this.match(this.router, URL.pathname);
-            m(req, res);
+            res.setHeader('content-type', 'application/json; charset=utf-8')
+           
+			// Collect data from POST stream and assign it in body of request Object.
+			let dataFromReq = null;
+			req.on('data', (chunk) => {
+			// Condition to check if data is being recieved or not.
+				if(!dataFromReq) {
+					dataFromReq = chunk.toString();
+					return;
+				}
+				dataFromReq += chunk.toString();
+			});
+
+			req.on('end',() => {
+				req.body = typeBasedParser(req.headers['content-type'],dataFromReq);
+				// Matching and Routing
+            	let m = this.match(this.router, URL.pathname, req.method);
+            	m(req, res);
+			});
         });
     }
 
-    match(router, url) {
+    match(router, url, method) {
         for(let obj of router) {
-            if(obj['url'] === url) {
+            if(obj['url'] === url && obj['method'] === method.toUpperCase()) {
                 return obj['fn'];
             }
         }
@@ -56,11 +71,23 @@ class App {
         const routeObj = {	
             'url': endpoint,
             'fn': (req, res) => {
-                fnx(req, res);
-            }
+                	fnx(req, res);
+            },
+			"method": "GET"
         }
         this.router.push(routeObj);
     }
+
+	post(endpoint, fxn) {
+		const routeObj = {
+			'url': endpoint,
+			'fn': (req, res) => {
+					fxn(req, res);
+				},
+			'method': "POST"
+		}
+		this.router.push(routeObj);
+	}
 }
 
 module.exports = App;
