@@ -1,23 +1,28 @@
 {
-  "name": "not-really-a-framework",
+  "name": "nraf",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
+  "description": "lightwight server framework for node, highly extensible",
+  "main": "nraf/nraf.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vipulbhj/not-really-a-framework.git"
   },
-  "keywords": [],
-  "author": "",
+  "engines": {
+    "node": ">=7.8.0"
+  },
+  "keywords": [
+    "framework",
+    "node",
+    "server",
+    "REST"
+  ],
+  "author": "Vipul Bhardwaj (@vipulbhj)",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/vipulbhj/not-really-a-framework/issues"
   },
   "homepage": "https://github.com/vipulbhj/not-really-a-framework#readme",
   "dependencies": {
-    "ecstatic": "^3.3.0"
+    "ecstatic": "3.3.0"
   }
 }
