@@ -9,4 +9,6 @@ function typeBasedParser(type,data) {
 		return null
 }
 
-module.exports =  typeBasedParser;
+module.exports =  {
+	typeBasedParser,
+};

@@ -3,15 +3,11 @@
 const http = require('http');   
 const url = require('url');
 const path = require('path');
-const typeBasedParser = require('./helper');
-const ecstatic = require('ecstatic')({
-	root: path.join(__dirname,'../public'),
-	showDir: false,
-	autoIndex: true,
-});
+const typeBasedParser = require('./helper').typeBasedParser;
 
 class App {
-    constructor() {
+    constructor(ecstatic) { 
+        this.ecstatic = ecstatic;
         this.router = [];
         this.app = http.createServer((req, res) => {
             
@@ -54,7 +50,7 @@ class App {
             }
         }
         return (req, res) => {
-            ecstatic(req, res);
+            this.ecstatic(req, res);
         }
     } 
 

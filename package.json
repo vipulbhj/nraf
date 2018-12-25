@@ -1,6 +1,6 @@
 {
   "name": "nraf",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "lightwight server framework for node, highly extensible",
   "main": "nraf/nraf.js",
   "repository": {
