@@ -1,6 +1,6 @@
 const nraf = require('../');
 const staticFilePath = __dirname + '/public';
-const app = nraf(staticFilePath);
+const app = nraf();
 
 const PORT = 5000;
 
