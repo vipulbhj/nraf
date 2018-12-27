@@ -20,7 +20,7 @@ ___
 ## Getting Started:- 
 Current no useful documentation is available for the project, but I am actively working on that(might be work to star the project to keep an eye over it).
 
-But in the mean time, If you one of the brave one's. Look into the example directory and open up example.js. You will find comments describing most of the things there are and I have also hacked together a fun example which demonstrates most of the regular bits.
+But in the mean time, If you one of the brave one's. Look into the example directory in the github repo and open up example.js. You will find comments describing most of the things there are and I have also hacked together a fun example which demonstrates most of the regular bits.
 
 
 *_Spread the word and give this project some love_*
