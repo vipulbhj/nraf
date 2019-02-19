@@ -29,6 +29,10 @@ app.get('/home', (req, res) => {
    res.sendFile(staticFilePath, 'index.html');
 });
 
+app.get('/pdf', (req, res) => {
+   res.sendFile(staticFilePath, 'trial.pdf');
+});
+
 // This route demonstrates construction of "GET" endpoint.
 app.get('/docs', (req, res) => {
     // send method is used to send text/html data. 
