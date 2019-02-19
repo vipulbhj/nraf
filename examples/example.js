@@ -25,6 +25,10 @@ const app = nraf(staticFilePath);
 // PORT on which the server will run.
 const PORT = 5000;
 
+app.get('/home', (req, res) => {
+   res.sendFile(staticFilePath, 'index.html');
+});
+
 // This route demonstrates construction of "GET" endpoint.
 app.get('/docs', (req, res) => {
     // send method is used to send text/html data. 
