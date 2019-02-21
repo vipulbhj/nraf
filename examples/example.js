@@ -33,7 +33,7 @@ app.use(function(req, res, next) {
 
 // Trying html static files
 app.get('/home', (req, res) => {
-   res.sendFile(staticFilePath, 'error.html');
+   res.sendFile(staticFilePath, 'index.html');
 });
 
 // Trying pdf static files
