@@ -31,10 +31,12 @@ app.use(function(req, res, next) {
   next();  
 });
 
+// Trying html static files
 app.get('/home', (req, res) => {
-   res.sendFile(staticFilePath, 'index.html');
+   res.sendFile(staticFilePath, 'error.html');
 });
 
+// Trying pdf static files
 app.get('/pdf', (req, res) => {
    res.sendFile(staticFilePath, 'trial.pdf');
 });
