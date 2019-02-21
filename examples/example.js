@@ -25,6 +25,12 @@ const app = nraf(staticFilePath);
 // PORT on which the server will run.
 const PORT = 5000;
 
+app.use(function(req, res, next) {
+  console.log('Hello I am a middleware');
+  console.log(req.headers);
+  next();  
+});
+
 app.get('/home', (req, res) => {
    res.sendFile(staticFilePath, 'index.html');
 });
