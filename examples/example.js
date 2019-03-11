@@ -36,6 +36,11 @@ app.get('/home', (req, res) => {
    res.sendFile(staticFilePath, 'index.html');
 });
 
+// Trying render static files
+app.get('/homerender', (req, res) => {
+   res.render(staticFilePath, 'index', {title: 'I love u'});
+});
+
 // Trying pdf static files
 app.get('/pdf', (req, res) => {
    res.sendFile(staticFilePath, 'trial.pdf');
