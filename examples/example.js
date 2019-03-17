@@ -22,6 +22,9 @@ const staticFilePath = __dirname + '/public';
  */
 const app = nraf(staticFilePath);
 
+// set view
+// app.setView(staticFilePath);
+
 // PORT on which the server will run.
 const PORT = 5000;
 
@@ -38,7 +41,7 @@ app.get('/home', (req, res) => {
 
 // Trying render static files
 app.get('/homerender', (req, res) => {
-   res.render(staticFilePath, 'index', {title: 'I love u'});
+   res.render('index', {title: 'I love u'});
 });
 
 // Trying pdf static files
