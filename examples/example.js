@@ -22,18 +22,26 @@ const staticFilePath = __dirname + '/public';
  */
 const app = nraf(staticFilePath);
 
+// set view
+app.setView('./public/');
+
 // PORT on which the server will run.
 const PORT = 5000;
 
 app.use(function(req, res, next) {
-  console.log('Hello I am a middleware');
-  console.log(req.headers);
+//   console.log('Hello I am a middleware');
+//   console.log(req.headers);
   next();  
 });
 
 // Trying html static files
 app.get('/home', (req, res) => {
    res.sendFile(staticFilePath, 'index.html');
+});
+
+// Trying render static files
+app.get('/homerender', (req, res) => {
+   res.render('index', {title: 'I love u', name: 'Raphael'});
 });
 
 // Trying pdf static files
