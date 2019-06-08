@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/vipulbhj/not-really-a-framework#readme",
   "dependencies": {
-    "ecstatic": "3.3.0"
+    "ecstatic": "3.3.2"
   }
 }
