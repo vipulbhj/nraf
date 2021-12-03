@@ -1,3 +1,6 @@
+#WIP: This readme might contain some though dumb and is under work. Please check after sometime. I recommend browsing code if you want to know what it does.
+
+
 ## Not-Really-A-Framework
 
 ### What is it:-
