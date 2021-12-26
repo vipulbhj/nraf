@@ -87,7 +87,7 @@ and this works, right out of the box.
 
 This means that, some amount of `express` code can directly be ported to `NRAF`, just by changing the imports.
 
-You can run the demo using `node example/index.js`. Here is video of what it should look like.
+You can run the demo using `node example/CRUD.js`. Here is video of what it should look like.
 
 ![demo](./demo.gif)
 
