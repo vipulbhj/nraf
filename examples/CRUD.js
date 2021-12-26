@@ -16,7 +16,6 @@ const USERS = [
 ];
 
 app.get("/users", (req, res) => {
-  res.render();
   res.json(USERS);
   res.end();
 });
@@ -38,4 +37,6 @@ app.get("/user/:userId", (req, res) => {
   res.end();
 });
 
-app.listen(PORT);
+app.listen(PORT, () => {
+  console.log("Server is running on PORT: ", PORT);
+});

@@ -1,3 +1,1 @@
-# WIP
-
-Rethinking about it
+# DOCS coming soon
