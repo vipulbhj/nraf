@@ -89,7 +89,7 @@ This means that, some amount of `express` code can directly be ported to `NRAF`,
 
 You can run the demo using `node example/index.js`. Here is video of what it should look like.
 
-![demo](demo.gif)
+![demo](./demo.gif)
 
 ## Examples
 
