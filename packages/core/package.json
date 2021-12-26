@@ -1,0 +1,7 @@
+{
+  "name": "@nraf/core",
+  "version": "1.0.0",
+  "description": "A zero dependency, micro web framework for NodeJS",
+  "main": "index.js",
+  "author": "Vipul (@vipulbhj)"
+}

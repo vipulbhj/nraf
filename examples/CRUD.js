@@ -1,4 +1,4 @@
-const NRAF = require("../index");
+const NRAF = require("@nraf/core");
 
 const app = NRAF();
 
