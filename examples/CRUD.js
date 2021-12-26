@@ -16,6 +16,7 @@ const USERS = [
 ];
 
 app.get("/users", (req, res) => {
+  res.render();
   res.json(USERS);
   res.end();
 });

@@ -2,6 +2,7 @@
 
 const url = require("url");
 const http = require("http");
+const path = require("path");
 const { typeBasedParser } = require("./helper");
 
 class App {
