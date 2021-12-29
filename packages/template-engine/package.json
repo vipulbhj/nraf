@@ -1,0 +1,7 @@
+{
+  "name": "@nraf/nte",
+  "version": "1.0.0",
+  "description": "NRAF Template Engine",
+  "main": "index.js",
+  "author": "Vipulbhj <vipulsworkmail@gmail.com>"
+}

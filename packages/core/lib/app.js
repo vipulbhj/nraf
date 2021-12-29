@@ -1,14 +1,28 @@
 "use strict";
 
+const fs = require("fs");
 const url = require("url");
 const http = require("http");
 const path = require("path");
+const NTE = require("@nraf/nte");
+const { promisify } = require("util");
 const { typeBasedParser } = require("./helper");
+
+const readFile = promisify(fs.readFile);
 
 class App {
   constructor() {
-    this.routers = [];
-    this.middlewares = [];
+    this.__publicResPath = null;
+    this.__templateResPath = null;
+
+    this.__routers = [];
+    this.__middlewares = [];
+    this.__templateCache = {};
+    this.__SET_TYPES = {
+      VIEWS: "views",
+      PUBLIC: "public",
+    };
+
     this.app = http.createServer((req, res) => {
       const URL = url.parse(req.url, true);
 
@@ -37,6 +51,32 @@ class App {
         res.setHeader("Location", location);
       };
 
+      res.render = (name, renderContext) => {
+        const absTemplatePath = path.join(
+          this.__templateResPath,
+          `${name}.nraf`
+        );
+        const cachedRenderer = this.__templateCache[absTemplatePath];
+        if (process.env.NODE_ENV === "PRODUCTION" && cachedRenderer) {
+          const html = cachedRenderer(renderContext);
+          res.send(html);
+          res.end();
+        } else {
+          readFile(absTemplatePath, { encoding: "utf8", flag: "r" })
+            .then((data) => {
+              const template = new NTE(data);
+              template.compile();
+              this.__templateCache[absTemplatePath] = template.getRenderer();
+              const html = template.render(renderContext);
+              res.send(html);
+              res.end();
+            })
+            .catch((err) => {
+              throw new Error(err);
+            });
+        }
+      };
+
       let dataFromReq = null;
       req.on("data", (chunk) => {
         if (!dataFromReq) {
@@ -46,13 +86,13 @@ class App {
         dataFromReq += chunk.toString();
       });
 
-      this.middlewares.forEach((callback) => {
+      this.__middlewares.forEach((callback) => {
         callback(req, res, function () {});
       });
 
       req.on("end", () => {
         req.body = typeBasedParser(req.headers["content-type"], dataFromReq);
-        let m = this.match(this.routers, req);
+        let m = this.match(this.__routers, req);
         m(req, res);
       });
     });
@@ -119,7 +159,7 @@ class App {
       },
       method: "GET",
     };
-    this.routers.push(routeObj);
+    this.__routers.push(routeObj);
   }
 
   post(endpoint, fxn) {
@@ -130,11 +170,24 @@ class App {
       },
       method: "POST",
     };
-    this.routers.push(routeObj);
+    this.__routers.push(routeObj);
+  }
+
+  set(setType, value) {
+    switch (setType) {
+      case this.__SET_TYPES.VIEWS:
+        this.__templateResPath = value;
+        break;
+      case this.__SET_TYPES.PUBLIC:
+        this.__publicResPath = value;
+        break;
+      default:
+        console.error("Unsupported type", setType);
+    }
   }
 
   use(callback) {
-    this.middlewares.push(callback);
+    this.__middlewares.push(callback);
   }
 }
 
