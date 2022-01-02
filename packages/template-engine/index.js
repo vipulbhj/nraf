@@ -34,11 +34,18 @@ class CodeBuilder {
 
 class Template {
   constructor(templateStr) {
+    this.__code = null;
     this._render_function = null;
     this.templateStr = templateStr;
   }
 
   tokenize() {
+    /*
+     * {{ <expression> }} -> We use render the output of any arbtitrary Javascript expression
+     * {% for | if | elif | else | endfor | endif %} -> Create a conditional block or loop
+     * {# COMMENT #} -> Write a comment, get's ignored when parsed.
+     *
+     */
     const re = new RegExp(/({{.*?}}|{%.*?%}|{#.*?#})/, "igm");
     return this.templateStr.split(re);
   }
@@ -47,6 +54,21 @@ class Template {
     const STACK = [];
     const globalVars = new Set();
 
+    /**
+     * Initialize Render function with base setup.
+     * Here the order of lines is very important.
+     * We are creating function initilization structure and locking placeholder for appending global variables.
+     * Here is what it looks like
+     *
+     * function render_function(content) {
+     *   <<< Create a placeholder for named variables, which are used. This will be filled in, once the parsing is completed >>>
+     *   var results = [];
+     *   function extend_result(items) { result.push(...items) };
+     *
+     *
+     * Since we need those variables to be defined at top, thus the order of lines is important.
+     */
+
     let code = new CodeBuilder();
     code.addLine("function render_function(context) {");
     let vars_code = code.addCodeSection();
@@ -54,42 +76,130 @@ class Template {
     code.addLine("function extend_result(items) { result.push(...items) };");
 
     const tokens = this.tokenize();
+
+    console.log("TOKENS", tokens);
+
     for (const token of tokens) {
       if (token.startsWith("{#")) {
         // Template Comment, we will just ignore
       } else if (token.startsWith("{{")) {
+        // Token Structure: {{ <statement> }}
         let expr = token.substring(2, token.length - 2).trim();
+        /*
+         * Check if top level expression stack is clean.
+         * If empty, it's not part of any block scope,
+         * so add expression to global variable Set.
+         */
         if (STACK.length === 0) globalVars.add(expr);
         code.addLine(`result.push(${expr});`);
       } else if (token.startsWith("{%")) {
-        let expr = token.substring(2, token.length - 2).trim();
-        let keywords = expr.split(" ");
+        // Token Structure: {{ <expression> }}
+        const expr = token.substring(2, token.length - 2).trim();
+        /*
+         * Possible Keywork Structures:
+         * [for, T, in, [T]]
+         * [if, boolean]
+         * [elif, boolean]
+         * [else]
+         * [endif]
+         * [endfor]
+         */
+        const keywords = expr.split(" ");
         if (keywords[0] === "for") {
-          if (keywords.length !== 4)
+          if (keywords.length !== 4) {
             throw new Error("Sytax error in ", keywords);
-          if (STACK.length === 0) globalVars.add(keywords[3]);
+          }
+
+          globalVars.add(keywords[3]);
           STACK.push(keywords[0]);
           code.addLine(`for(const ${keywords[1]} of ${keywords[3]}) {`);
-        } else if (keywords[0].startsWith("end")) {
-          if (keywords.length !== 1)
-            throw new Error("Syntax error in ", keywords);
-          const endOp = keywords[0].substring(3);
-          const op = STACK.pop();
-          if (op !== endOp) throw new Error("Syntax error in", keywords);
+        } else if (keywords[0] === "if") {
+          if (keywords.length !== 2) {
+            throw new Error("Sytax error in ", keywords);
+          }
+
+          globalVars.add(keywords[1]);
+          STACK.push(keywords[0]);
+          code.addLine(`if(${keywords[1]}) {`);
+        } else if (keywords[0] === "elif") {
+          if (keywords.length !== 2) {
+            throw new Error("Sytax error in ", keywords);
+          }
+
+          const TOP_STACK_ELEM = STACK[STACK.length - 1];
+          if (TOP_STACK_ELEM !== "if" && TOP_STACK_ELEM !== "elif") {
+            throw new Error("Syntax Error, can't use elif without if");
+          }
+
+          globalVars.add(keywords[1]);
+          STACK.push(keywords[0]);
+          code.addLine(`} else if(${keywords[1]}) {`);
+        } else if (keywords[0] === "else") {
+          if (keywords.length !== 1) {
+            throw new Error("Sytax error in ", keywords);
+          }
+
+          const TOP_STACK_ELEM = STACK[STACK.length - 1];
+          if (TOP_STACK_ELEM !== "if" && TOP_STACK_ELEM !== "elif") {
+            throw new Error(
+              `Syntax Error, can't use elif without if, STACK
+              ${STACK.join("\n")}`
+            );
+          }
+
+          STACK.push(keywords[0]);
+
+          code.addLine(`} else {`);
+        } else if (keywords[0] === "endfor") {
+          if (keywords.length !== 1) {
+            throw new Error("Syntax error, invalid use", keywords);
+          }
+
+          const stackOp = STACK.pop();
+
+          if (stackOp !== "for") {
+            throw new Error("Syntax error, missing for loop declaration");
+          }
+
+          code.addLine("}");
+        } else if (keywords[0] === "endif") {
+          if (keywords.length !== 1) {
+            throw new Error("Syntax error, invalid use", keywords);
+          }
+
+          const stackOp = STACK.pop();
+          if (stackOp !== "if" && stackOp !== "elif" && stackOp !== "else") {
+            throw new Error("Syntax error, missing if declaration");
+          }
+
+          // CLEAN STACK OF ALL IF info.
+          while (STACK.length) {
+            const op = STACK.pop();
+            if (op !== "if" && op !== "elif" && op !== "else") {
+              STACK.push(op);
+              break;
+            }
+          }
+
           code.addLine("}");
         }
       } else {
         // Literals
-        code.addLine(`result.push(\`${token.trim()}\`);`);
+        code.addLine(`result.push(\`${token}\`);`);
       }
     }
 
     for (const _var of globalVars) {
       vars_code.addLine(`var ${_var} = context['${_var}'];`);
     }
+
     code.addLine("return result.join('');");
+    // A trick to return the reference of exectued function, from the VM, back to external environment.
     code.addLine("}; render_function;");
+
     const cleanedCode = code.toString().replace(/\n/g, "");
+
+    this.__code = cleanedCode;
     this._render_function = vm.runInNewContext(cleanedCode);
   }
 
