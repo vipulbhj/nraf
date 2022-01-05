@@ -1,5 +1,7 @@
 # Todo App built with NRAF
 
-Run `yarn index.js` to start the server.
+Run `node index.js` to start the server.
 
 # Video
+
+![Demo](./demo.gif)
