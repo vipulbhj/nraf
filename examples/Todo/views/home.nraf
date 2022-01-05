@@ -15,11 +15,7 @@
   </head>
   <body>
     <nav class="nav">
-      <h1 class="nav-title">NRAF</h1>
-      <div class="nav-options">
-        <a class="nav-options__a" href="/signup">Sign Up</a>
-        <a class="nav-options__a" href="/login">Login</a>
-      </div>
+      <h1 class="nav-title">NRAF Example Todo App</h1>
     </nav>
     <main class="main-container">
       <h1>Todos</h1>
@@ -47,7 +43,7 @@
           </button>
           <form
             method="POST"
-            action="/edit-todo"
+            action="/delete-todo"
             class="todo-list__item-delete-form"
           >
             <input type="text" name="todoId" class="hidden" value="{{ idx }}" />

@@ -2,8 +2,8 @@
   display: flex;
   padding: 10px 20px;
   align-items: center;
+  justify-content: center;
   background-color: #fafaf9;
-  justify-content: space-between;
 }
 
 .nav-title {
