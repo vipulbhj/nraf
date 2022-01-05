@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | NRAF Todo example app</title>
+    <link rel="stylesheet" href="/styles/global.css" />
+    <link rel="stylesheet" href="/styles/home.css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <script src="/js/home.js"></script>
+  </head>
+  <body>
+    <nav class="nav">
+      <h1 class="nav-title">NRAF</h1>
+      <div class="nav-options">
+        <a class="nav-options__a" href="/signup">Sign Up</a>
+        <a class="nav-options__a" href="/login">Login</a>
+      </div>
+    </nav>
+    <main class="main-container">
+      <h1>Todos</h1>
+      <form class="add-todo" method="POST" action="/add-todo">
+        <input
+          type="text"
+          name="todoContent"
+          placeholder="Add TODO"
+          class="add-todo__input"
+        />
+        <button type="submit" class="btn add-todo__button">Add</button>
+      </form>
+      {% if isTodoEmpty %}
+      <p>No Todos Found</p>
+      {% else %}
+      <ul id="todo-list" class="todo-list">
+        {% for idx todo in todos %}
+        <li class="todo-list__item">
+          <p class="todo-list__item-text">{{ todo }}</p>
+          <button
+            data-todo-idx="{{ idx }}"
+            class="editTodoButton btn todo-list__item-edit-button"
+          >
+            Edit
+          </button>
+          <form
+            method="POST"
+            action="/edit-todo"
+            class="todo-list__item-delete-form"
+          >
+            <input type="text" name="todoId" class="hidden" value="{{ idx }}" />
+            <button
+              type="submit"
+              class="btn todo-list__item-delete-form__button"
+            >
+              Delete
+            </button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </main>
+  </body>
+</html>

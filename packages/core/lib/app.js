@@ -6,7 +6,7 @@ const http = require("http");
 const path = require("path");
 const NTE = require("@nraf/nte");
 const { promisify } = require("util");
-const { typeBasedParser } = require("./helper");
+const { typeBasedParser, EXT_MIME_TYPE_HEADER_MAP } = require("./helper");
 
 const readFile = promisify(fs.readFile);
 
@@ -49,6 +49,7 @@ class App {
         }
         res.setStatus(302);
         res.setHeader("Location", location);
+        res.end();
       };
 
       res.render = (name, renderContext) => {
@@ -56,6 +57,15 @@ class App {
           this.__templateResPath,
           `${name}.nraf`
         );
+
+        // Check if file exists.
+        if (!fs.existsSync(absTemplatePath)) {
+          res.setStatus(404);
+          res.setHeader("Content-Type", "text/html");
+          res.send("<h1>Error: 404. Page Not Found</h1>");
+          res.end();
+        }
+
         const cachedRenderer = this.__templateCache[absTemplatePath];
         if (process.env.NODE_ENV === "PRODUCTION" && cachedRenderer) {
           const html = cachedRenderer(renderContext);
@@ -117,7 +127,7 @@ class App {
         })
         .join("/");
 
-      const routeSignatureRegex = new RegExp(routeSignature, "g");
+      const routeSignatureRegex = new RegExp(`^${routeSignature}$`, "g");
 
       const isRoutePathnameMatch = routeSignatureRegex.exec(incomingRequestUrl);
 
@@ -135,11 +145,7 @@ class App {
       }
     }
 
-    return (req, res) => {
-      res.setStatus(401);
-      res.send("Not Found");
-      res.end();
-    };
+    return this.serverPublicAssets.bind(this);
   }
 
   listen(PORT, callback = () => {}) {
@@ -188,6 +194,29 @@ class App {
 
   use(callback) {
     this.__middlewares.push(callback);
+  }
+
+  serverPublicAssets(req, res) {
+    const absolutePath = path.join(this.__publicResPath, req.url);
+    if (fs.existsSync(absolutePath)) {
+      const ext = path.extname(absolutePath);
+      const header = EXT_MIME_TYPE_HEADER_MAP[ext];
+      if (header) {
+        res.setHeader("Content-Type", header);
+      }
+      readFile(absolutePath, { flag: "r" })
+        .then((data) => {
+          res.send(data);
+          res.end();
+        })
+        .catch((err) => {
+          throw err;
+        });
+    } else {
+      res.setStatus(401);
+      res.send("Not Found");
+      res.end();
+    }
   }
 }
 

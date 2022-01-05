@@ -63,7 +63,7 @@ class Template {
      * function render_function(content) {
      *   <<< Create a placeholder for named variables, which are used. This will be filled in, once the parsing is completed >>>
      *   var results = [];
-     *   function extend_result(items) { result.push(...items) };
+     *   function extend_result(items) { extend_result(...items) };
      *
      *
      * Since we need those variables to be defined at top, thus the order of lines is important.
@@ -73,11 +73,11 @@ class Template {
     code.addLine("function render_function(context) {");
     let vars_code = code.addCodeSection();
     code.addLine("var result = [];");
-    code.addLine("function extend_result(items) { result.push(...items) };");
+    code.addLine("function extend_result(items) { result.push(items) };");
 
     const tokens = this.tokenize();
 
-    console.log("TOKENS", tokens);
+    // console.log("TOKENS", tokens);
 
     for (const token of tokens) {
       if (token.startsWith("{#")) {
@@ -91,12 +91,13 @@ class Template {
          * so add expression to global variable Set.
          */
         if (STACK.length === 0) globalVars.add(expr);
-        code.addLine(`result.push(${expr});`);
+        code.addLine(`extend_result(${expr});`);
       } else if (token.startsWith("{%")) {
-        // Token Structure: {{ <expression> }}
+        // Token Structure: {% <expression> %}
         const expr = token.substring(2, token.length - 2).trim();
         /*
-         * Possible Keywork Structures:
+         * Possible Keyword Structures:
+         * [for, int, T, in, [T]]
          * [for, T, in, [T]]
          * [if, boolean]
          * [elif, boolean]
@@ -106,13 +107,23 @@ class Template {
          */
         const keywords = expr.split(" ");
         if (keywords[0] === "for") {
-          if (keywords.length !== 4) {
+          if (keywords.length !== 4 && keywords.length !== 5) {
             throw new Error("Sytax error in ", keywords);
           }
 
-          globalVars.add(keywords[3]);
           STACK.push(keywords[0]);
-          code.addLine(`for(const ${keywords[1]} of ${keywords[3]}) {`);
+
+          if (keywords.length === 4) {
+            globalVars.add(keywords[3]);
+
+            code.addLine(`for(const ${keywords[1]} of ${keywords[3]}) {`);
+          } else if (keywords.length === 5) {
+            globalVars.add(keywords[4]);
+
+            code.addLine(
+              `for(const [${keywords[1]}, ${keywords[2]}] of ${keywords[4]}.entries()) {`
+            );
+          }
         } else if (keywords[0] === "if") {
           if (keywords.length !== 2) {
             throw new Error("Sytax error in ", keywords);
@@ -185,7 +196,7 @@ class Template {
         }
       } else {
         // Literals
-        code.addLine(`result.push(\`${token}\`);`);
+        code.addLine(`extend_result(\`${token}\`);`);
       }
     }
 
@@ -194,12 +205,14 @@ class Template {
     }
 
     code.addLine("return result.join('');");
+
     // A trick to return the reference of exectued function, from the VM, back to external environment.
     code.addLine("}; render_function;");
 
     const cleanedCode = code.toString().replace(/\n/g, "");
 
     this.__code = cleanedCode;
+
     this._render_function = vm.runInNewContext(cleanedCode);
   }
 

@@ -1,7 +1,5 @@
 const NRAF = require("@nraf/core");
-
 const app = NRAF();
-
 const PORT = 3000;
 
 const USERS = [

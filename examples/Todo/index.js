@@ -4,11 +4,40 @@ const app = NRAF();
 const PORT = 3000;
 
 app.set("views", path.join(__dirname, "views"));
+app.set("public", path.join(__dirname, "public"));
 
-app.get("/greet/:user_name", (req, res) => {
-  const message = req.query.message;
-  const user_name = req.params.user_name;
-  res.render("greet", { user_name, message });
+const TODOS = [];
+
+app.get("/", (req, res) => {
+  res.render("home", {
+    todos: TODOS,
+    isTodoEmpty: TODOS.length === 0,
+  });
+});
+
+app.post("/add-todo", (req, res) => {
+  TODOS.push(req.body.todoContent);
+
+  res.redirect("/");
+});
+
+app.post("/edit-todo", (req, res) => {
+  const idx = req.body.idx;
+  const content = req.body.content;
+
+  TODOS[idx] = content;
+
+  res.json({
+    idx,
+    content,
+  });
+  res.end();
+});
+
+app.post("/delete-todo", (req, res) => {
+  TODOS.splice(req.body.todoId, 1);
+
+  res.redirect("/");
 });
 
 app.listen(PORT, () => {

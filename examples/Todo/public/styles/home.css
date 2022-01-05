@@ -1,0 +1,83 @@
+.nav {
+  display: flex;
+  padding: 10px 20px;
+  align-items: center;
+  background-color: #fafaf9;
+  justify-content: space-between;
+}
+
+.nav-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.nav-options__a {
+  color: white;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 0.5em;
+  text-decoration: none;
+  background-color: #0e7490;
+}
+
+.main-container {
+  height: 90%;
+  display: flex;
+  max-width: 720px;
+  margin: 20px auto;
+  padding: 10px 20px;
+  flex-direction: column;
+}
+
+.add-todo {
+  display: flex;
+  align-items: center;
+  margin: 40px 0px 20px;
+  justify-content: space-between;
+}
+
+.add-todo__input {
+  width: 60%;
+  border: none;
+  font-size: 1.5em;
+  border-bottom: 1px solid black;
+}
+
+.add-todo__button {
+  width: 30%;
+  font-size: 1.25em;
+}
+
+.todo-list {
+  padding: 0;
+  height: 100%;
+  margin: 20px 0px;
+  list-style: none;
+  overflow-y: scroll;
+}
+
+.todo-list__item {
+  display: flex;
+  padding: 10px 0px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+}
+
+.todo-list__item-text {
+  width: 50%;
+  text-align: justify;
+}
+
+.todo-list__item-edit-button {
+  width: 20%;
+}
+
+.todo-list__item-delete-form {
+  display: block;
+  width: 20%;
+}
+
+.todo-list__item-delete-form__button {
+  width: 100%;
+}
