@@ -39,6 +39,13 @@ class Template {
     this.templateStr = templateStr;
   }
 
+  // Takes a path and returns the html of the
+  include(path, context) {
+    const t = new Template(path);
+    t.compile(context);
+    return t.render();
+  }
+
   tokenize() {
     /*
      * {{ <expression> }} -> We use render the output of any arbtitrary Javascript expression
@@ -83,14 +90,19 @@ class Template {
       if (token.startsWith("{#")) {
         // Template Comment, we will just ignore
       } else if (token.startsWith("{{")) {
-        // Token Structure: {{ <statement> }}
+        // Token Structure: {{ <statement> | include(path) }}
         let expr = token.substring(2, token.length - 2).trim();
         /*
          * Check if top level expression stack is clean.
          * If empty, it's not part of any block scope,
          * so add expression to global variable Set.
          */
-        if (STACK.length === 0) globalVars.add(expr);
+        if (expr.startsWith("include")) {
+          if (STACK.length === 0) globalVars.add("include");
+        } else {
+          if (STACK.length === 0) globalVars.add(expr);
+        }
+
         code.addLine(`extend_result(${expr});`);
       } else if (token.startsWith("{%")) {
         // Token Structure: {% <expression> %}
@@ -212,6 +224,8 @@ class Template {
     const cleanedCode = code.toString().replace(/\n/g, "");
 
     this.__code = cleanedCode;
+
+    // console.log(code.toString());
 
     this._render_function = vm.runInNewContext(cleanedCode);
   }
