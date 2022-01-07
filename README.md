@@ -78,7 +78,6 @@ what this piece of code does is, it imports the `express` package and initialize
 But, what's interesting here is, the above code is also valid `NRAF` code, all you need to do is, change the imports.
 
 ```javascript
-// nraf is not on npm yet, so this is not really real code but you get the idea.
 const NRAF = require("nraf");
 const app = NRAF();
 ```
