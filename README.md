@@ -87,10 +87,10 @@ and this works, right out of the box.
 
 This means that, some amount of `express` code can directly be ported to `NRAF`, just by changing the imports.
 
-You can run the demo using `node example/CRUD.js`. Here is video of what it should look like.
-
-![demo](./demo.gif)
+You can play with the Todo App example, using `node example/Todo/index.js`.
 
 ## Examples
 
 The `examples` folder contains files, which are labelled, so you can quickly look specific application examples which you might be interest in.
+
+![demo](./demo.gif)

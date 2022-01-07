@@ -3,5 +3,15 @@
   "version": "1.0.0",
   "description": "A zero dependency, micro web framework for NodeJS",
   "main": "index.js",
-  "author": "Vipul (@vipulbhj)"
+  "author": "Vipul (@vipulbhj)",
+  "dependencies": {
+    "@nraf/nte": "1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vipulbhj/nraf/tree/master/packages/core"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

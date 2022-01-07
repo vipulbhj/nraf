@@ -3,5 +3,12 @@
   "version": "1.0.0",
   "description": "NRAF Template Engine",
   "main": "index.js",
-  "author": "Vipulbhj <vipulsworkmail@gmail.com>"
+  "author": "Vipulbhj <vipulsworkmail@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vipulbhj/nraf/tree/master/packages/template-engine"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }
