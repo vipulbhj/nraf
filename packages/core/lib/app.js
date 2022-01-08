@@ -53,6 +53,34 @@ class App {
       };
 
       res.render = (name, renderContext) => {
+        const includePartial = (filePath) => {
+          const partialAbsPath = path.join(
+            this.__templateResPath,
+            `${filePath}.nraf`
+          );
+
+          // Check if file exists.
+          if (!fs.existsSync(partialAbsPath)) {
+            throw new Error(`Partial not found. ${partialAbsPath}`);
+          }
+
+          const cachedRenderer = this.__templateCache[partialAbsPath];
+          if (process.env.NODE_ENV === "PRODUCTION" && cachedRenderer) {
+            const html = cachedRenderer(renderContext);
+            return html;
+          } else {
+            const data = fs.readFileSync(partialAbsPath, {
+              flag: "r",
+              encoding: "utf8",
+            });
+            const template = new NTE(data);
+            template.compile();
+            this.__templateCache[partialAbsPath] = template.getRenderer();
+            const html = template.render(renderContext);
+            return html;
+          }
+        };
+
         const absTemplatePath = path.join(
           this.__templateResPath,
           `${name}.nraf`
@@ -77,7 +105,10 @@ class App {
               const template = new NTE(data);
               template.compile();
               this.__templateCache[absTemplatePath] = template.getRenderer();
-              const html = template.render(renderContext);
+              const html = template.render({
+                ...renderContext,
+                include: includePartial,
+              });
               res.send(html);
               res.end();
             })

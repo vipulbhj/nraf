@@ -1,41 +1,36 @@
 const Template = require("./index");
 
-const sampleInput = `
-<p>Welcome, {{user_name}}!</p>
-{% if isAdmin %}
-  <p>You are Admin.</p>
-{% elif isModerator %}
-  <p> You are Moderator</p>
-{% else %}
-  <p>You are not Admin.</p>
-{% endif %}
-
-<p>Products:</p>
-<ul>
-{% for product in product_list %}
-  <li>{{ product.name }}: {{ product.price }}</li>
-{% endfor %}
-</ul>
+const footerPartial = `
+  <ul>
+    <li>
+    {% if loggedIn %}
+      <a>Logout</a>
+    {% else %}
+      <a>Log in</a>
+    {% endif %}
+    </li>
+  </ul>
 `;
 
-const testOne = `<body><h1> Hello {{ user_name }}!!</h1></body>`;
+const homePage = `
+  <main>
+    Hello World
+  </main>
 
-const t = new Template(sampleInput);
-t.compile();
-const html = t.render({
-  user_name: "Vipul Bhardwaj",
-  isAdmin: false,
-  isModerator: true,
-  product_list: [
-    {
-      name: "Apple",
-      price: "$12",
-    },
-    {
-      name: "Orange",
-      price: "$7",
-    },
-  ],
+  {{ include("layout/footer.nraf") }}
+`;
+
+const exmapleIncludes = new Template(homePage);
+exmapleIncludes.compile();
+const exmapleIncludesHtml = exmapleIncludes.render({
+  include: (path) => {
+    // This function needs to give me a template
+    const t = new Template(footerPartial);
+    t.compile();
+    return t.render({
+      loggedIn: true,
+    });
+  },
 });
 
-console.log(html);
+console.log(exmapleIncludesHtml);
