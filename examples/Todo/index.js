@@ -32,7 +32,6 @@ app.post("/edit-todo", (req, res) => {
     idx,
     content,
   });
-  res.end();
 });
 
 app.post("/delete-todo", (req, res) => {

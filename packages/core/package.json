@@ -1,11 +1,11 @@
 {
   "name": "@nraf/core",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A zero dependency, micro web framework for NodeJS",
   "main": "index.js",
   "author": "Vipul (@vipulbhj)",
   "dependencies": {
-    "@nraf/nte": "1.0.0"
+    "@nraf/nte": "1.1.0"
   },
   "repository": {
     "type": "git",

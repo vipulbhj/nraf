@@ -2,7 +2,7 @@
 
 # NRAF()
 
-Creates a NRAF application. The `NRAF()` function is a top-level core function exported by the `@nraf/core` package.
+Creates a NRAF application. The `NRAF()` function is a top-level core function exported by the `@nraf/core` package.
 
 ```javascript
 const NRAF = require("@nraf/core");
@@ -11,7 +11,7 @@ const app = NRAF();
 
 # Application
 
-The `app` object conventionally denotes the Nraf application. Create it by calling the top-level `NRAF()` function exported by the nraf/core module:
+The `app` object conventionally denotes the Nraf application. Create it by calling the top-level `NRAF()` function exported by the nraf/core module:
 
 ```javascript
 var NRAF = require("@nraf/core");
@@ -26,7 +26,7 @@ app.listen(3000);
 
 ## app.set(name, value)
 
-Assigns setting `name` to `value`.
+Assigns setting `name` to `value`.
 
 The following table lists application settings:
 
@@ -85,7 +85,7 @@ app.post("/add-todo", (req, res) => {
 
 ## app.use(callback)
 
-Mounts the specified middleware function.
+Mounts the specified middleware function.
 
 ### Example:
 
@@ -98,7 +98,7 @@ app.use((req, res, next) => {
 
 ## app.listen(PORT, callback)
 
-This method is identical to Node’s [http.Server.listen()](https://nodejs.org/api/http.html#http_server_listen).
+This method is identical to Node’s [http.Server.listen()](https://nodejs.org/api/http.html#http_server_listen).
 
 ### Example:
 
@@ -117,9 +117,9 @@ app.listen(PORT, () => {
 
 ## res.render(view, locals)
 
-Renders a view and sends the compiled HTML string to the client.
+Renders a view and sends the compiled HTML string to the client.
 
-The `view` argument is a string that is the file name of the view file to render.
+The `view` argument is a string that is the file name of the view file to render.
 
 `locals` is an object whose properties define local variables for the view.
 
@@ -140,7 +140,7 @@ In the above example, `home` is the view passed which is same as the name of the
 
 ## res.redirect(path)
 
-Redirects to the URL derived from the specified `path`.
+Redirects to the URL derived from the specified `path`.
 
 It by default sets the HTTP status code to 302.
 
@@ -152,7 +152,7 @@ res.redirect("/");
 
 ## res.json()
 
-Sends a JSON response. This method sends a response (with the correct content-type) that is the parameter converted to a JSON string using [JSON.stringify()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify).
+Sends a JSON response. This method sends a response (with the correct content-type) that is the parameter converted to a JSON string using [JSON.stringify()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify).
 
 ### Example:
 
@@ -165,7 +165,7 @@ res.json({
 
 ## res.setStatus(statusCode)
 
-Sets the response HTTP status code to `statusCode`. If an unknown status code is specified, the response body will just be the code number.
+Sets the response HTTP status code to `statusCode`. If an unknown status code is specified, the response body will just be the code number.
 
 ### Example:
 
@@ -185,7 +185,7 @@ res.send("<p>some html</p>");
 
 ## res.end()
 
-Ends the response process. This method comes from the [response.end() method of http.ServerResponse](https://nodejs.org/api/http.html#http_response_end_data_encoding_callback).
+Ends the response process. This method comes from the [response.end() method of http.ServerResponse](https://nodejs.org/api/http.html#http_response_end_data_encoding_callback).
 
 ### Example:
 
@@ -228,7 +228,7 @@ app.post("/add-todo", (req, res) => {
 
 ## req.params
 
-This property is a JS object containing properties mapped to the named route “parameters”. For example, if you have the route `/books/:bookId`, then the `bookID` property is available as `req.params.bookID`. This object defaults to `{}`.
+This property is a JS object containing properties mapped to the named route “parameters”. For example, if you have the route `/books/:bookId`, then the `bookID` property is available as `req.params.bookID`. This object defaults to `{}`.
 
 ### Example:
 
@@ -241,7 +241,7 @@ req.params: { "userId": "34", "bookId": "8989" }
 
 ## req.query
 
-This property is a JS object after the query string is parsed. This object defaults to `{}`.
+This property is a JS object after the query string is parsed. This object defaults to `{}`.
 
 ### Example:
 

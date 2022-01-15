@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "@nraf/core": "1.0.0"
+    "@nraf/core": "1.1.0"
   },
   "scripts": {
     "start": "node index.js"

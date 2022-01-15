@@ -32,15 +32,19 @@ class App {
       res.setHeader("Content-Type", "text/html");
       res.setHeader("Client", "Not-Really-A-Framework");
 
-      res.send = res.write;
-
       res.setStatus = (code) => {
         res.statusCode = code;
+      };
+
+      res.send = (data) => {
+        res.write(data);
+        res.end();
       };
 
       res.json = (obj) => {
         res.setHeader("content-type", "application/json; charset=utf-8");
         res.write(JSON.stringify(obj));
+        res.end();
       };
 
       res.redirect = (location) => {
