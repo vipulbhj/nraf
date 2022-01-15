@@ -16,11 +16,13 @@ And thus NRAF doesn't using any external dependencies and everything is built fr
 
 ## Documentaion
 
-Read more about `nraf`:
+You can start by going through the [Quick Start Guide](<(./docs/quick-start.md)>), which will get you up and running quickly and also teach you most of the basics about `NRAF`.
 
-- [Quick Start Guide](./docs/quick%20start.md)
-- [Core API specification](./docs/Core%20API.md)
-- [Template Engine specification](./docs/template%20engine.md)
+All the links are mentioned below.
+
+- [Quick Start Guide](./docs/quick-start.md)
+- [Core API Docs](./docs/core-api.md)
+- [NTE Docs](./docs/template-engine.md)
 
 ## Inspired by ExpressJS
 

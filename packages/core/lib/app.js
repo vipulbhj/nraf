@@ -228,6 +228,25 @@ class App {
   }
 
   serverPublicAssets(req, res) {
+    if (!this.__publicResPath) {
+      console.error(`
+WARNING:      
+*****
+Got a request for "${req.url}" asset, but can't serve public assets, as public asset path was never set.
+
+If you are making a website, you should check your applicaion entrypoint, and call call "app.set("public", <path>);" to fix this issue.
+
+If you are making REST API, and testing them via the browser, you can ignore this, as this might be a request brower automatically sent to fetch resource like "favicon icons", etc.
+
+Refer to the documentation, to learn more.
+*****      
+      `);
+
+      res.setStatus(401);
+      res.send("Not Found");
+      return res.end();
+    }
+
     const absolutePath = path.join(this.__publicResPath, req.url);
     if (fs.existsSync(absolutePath)) {
       const ext = path.extname(absolutePath);
