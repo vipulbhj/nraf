@@ -14,7 +14,7 @@ const footerPartial = `
 
 const homePage = `
   <main>
-    Hello World
+    Hello, {{ name }}
   </main>
 
   {{ include("layout/footer.nraf") }}

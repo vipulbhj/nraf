@@ -14,6 +14,14 @@ The NodeJS ecosystem has a problem of developers relying on external dependencie
 
 And thus NRAF doesn't using any external dependencies and everything is built from scratch.
 
+## Documentaion
+
+Read more about `nraf`:
+
+- [Quick Start Guide](./docs/quick%20start.md)
+- [Core API specification](./docs/Core%20API.md)
+- [Template Engine specification](./docs/template%20engine.md)
+
 ## Inspired by ExpressJS
 
 When I initially started working on NRAF, I frequenly looked at the ExpressJS source code for inspiration of possible ways of implementing a feature.
@@ -87,14 +95,6 @@ and this works, right out of the box.
 This means that, some amount of `express` code can directly be ported to `NRAF`, just by changing the imports.
 
 You can play with the Todo App example, using `node example/Todo/index.js`.
-
-## Documentaion
-
-Read more about `nraf`:
-
-- [Quick Start Guide](./docs/quick%20start.md)
-- [Core API specification](./docs/Core%20API.md)
-- [Template Engine specification](./docs/template%20engine.md)
 
 ## Examples
 

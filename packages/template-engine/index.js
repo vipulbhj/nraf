@@ -84,8 +84,6 @@ class Template {
 
     const tokens = this.tokenize();
 
-    // console.log("TOKENS", tokens);
-
     for (const token of tokens) {
       if (token.startsWith("{#")) {
         // Template Comment, we will just ignore
@@ -224,8 +222,6 @@ class Template {
     const cleanedCode = code.toString().replace(/\n/g, "");
 
     this.__code = cleanedCode;
-
-    // console.log(code.toString());
 
     this._render_function = vm.runInNewContext(cleanedCode);
   }
