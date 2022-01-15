@@ -1,4 +1,4 @@
-# NRAF
+![nraf logo](https://user-images.githubusercontent.com/63957920/149619576-3df47314-2d3e-4d50-8e12-da5bb4ab9b77.png)
 
 NRAF is an abbreviation, for "Not Really A Framework". I don't remember why I named it that in 2018, it's been a while, but I kinda like the sound of it, so the name stayed.
 
@@ -87,6 +87,14 @@ and this works, right out of the box.
 This means that, some amount of `express` code can directly be ported to `NRAF`, just by changing the imports.
 
 You can play with the Todo App example, using `node example/Todo/index.js`.
+
+## Documentaion
+
+Read more about `nraf`:
+
+- [Quick Start Guide](./docs/quick%20start.md)
+- [Core API specification](./docs/Core%20API.md)
+- [Template Engine specification](./docs/template%20engine.md)
 
 ## Examples
 
