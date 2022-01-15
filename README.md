@@ -16,7 +16,7 @@ And thus NRAF doesn't using any external dependencies and everything is built fr
 
 ## Documentaion
 
-You can start by going through the [Quick Start Guide](<(./docs/quick-start.md)>), which will get you up and running quickly and also teach you most of the basics about `NRAF`.
+You can start by going through the [Quick Start Guide](./docs/quick-start.md), which will get you up and running quickly and also teach you most of the basics about `NRAF`.
 
 All the links are mentioned below.
 
