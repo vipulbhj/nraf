@@ -49,7 +49,6 @@ const USERS = [
 
 app.get("/users", (req, res) => {
   res.json(USERS);
-  res.end();
 });
 
 app.get("/user/:userId", (req, res) => {
@@ -66,7 +65,6 @@ app.get("/user/:userId", (req, res) => {
       message: "Error, no user found",
     });
   }
-  res.end();
 });
 
 app.listen(PORT, () => {
