@@ -1,5 +1,3 @@
-const qs = require("querystring");
-
 const EXT_MIME_TYPE_HEADER_MAP = {
   ".css": "text/css",
   ".ico": "image/vnd.microsoft.icon",
@@ -8,7 +6,8 @@ const EXT_MIME_TYPE_HEADER_MAP = {
 };
 
 function typeBasedParser(type, data) {
-  if (type === "application/x-www-form-urlencoded") return qs.parse(data);
+  if (type === "application/x-www-form-urlencoded")
+    return new URLSearchParams(data);
   else if (
     type === "application/json;charset=utf-8" ||
     type === "application/json"
