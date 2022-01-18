@@ -6,7 +6,12 @@ const http = require("http");
 const path = require("path");
 const NTE = require("@nraf/nte");
 const { promisify } = require("util");
-const { typeBasedParser, EXT_MIME_TYPE_HEADER_MAP } = require("./helper");
+const { NRAF_ROUTER } = require("./constants");
+const {
+  typeBasedParser,
+  EXT_MIME_TYPE_HEADER_MAP,
+  combineURLs,
+} = require("./helper");
 
 const readFile = promisify(fs.readFile);
 
@@ -192,11 +197,11 @@ class App {
     });
   }
 
-  get(endpoint, fnx) {
+  get(endpoint, fxn) {
     const routeObj = {
       url: endpoint,
       fn: (req, res) => {
-        fnx(req, res);
+        fxn(req, res);
       },
       method: "GET",
     };
@@ -227,8 +232,28 @@ class App {
     }
   }
 
-  use(callback) {
-    this.__middlewares.push(callback);
+  use(...args) {
+    const isRouterInjections = args?.[1]?.getType() === NRAF_ROUTER;
+    if (isRouterInjections) {
+      const baseEndpoint = args[0];
+      const routes = args?.[1]?.getRoutes();
+      if (baseEndpoint && routes) {
+        routes.forEach(({ url, method, fn }) => {
+          if (method === "GET") {
+            this.get(combineURLs(baseEndpoint, url), fn);
+          } else if (method === "POST") {
+            this.post(combineURLs(baseEndpoint, url), fn);
+          } else {
+            console.assert(false, "UNSUPPORTED METHOD");
+          }
+        });
+      } else {
+        console.assert(
+          router?.length !== 0,
+          `Unexpected routes collection ${args[1]}`
+        );
+      }
+    }
   }
 
   serverPublicAssets(req, res) {

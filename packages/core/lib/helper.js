@@ -16,7 +16,14 @@ function typeBasedParser(type, data) {
   else return null;
 }
 
+function combineURLs(baseURL, relativeURL) {
+  return relativeURL
+    ? baseURL.replace(/\/+$/, "") + "/" + relativeURL.replace(/^\/+/, "")
+    : baseURL;
+}
+
 module.exports = {
   typeBasedParser,
   EXT_MIME_TYPE_HEADER_MAP,
+  combineURLs,
 };
