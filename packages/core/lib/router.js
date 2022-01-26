@@ -1,32 +1,13 @@
 const { NRAF_ROUTER } = require("./constants");
+const { get: addGETEnpoint, post: addPOSTEndpoint } = require("./helper");
 
 class NRAFRouter {
   constructor() {
-    this.__routes = [];
+    this.__routers = [];
     this.__TYPE = NRAF_ROUTER;
-  }
 
-  get(endpoint, fxn) {
-    const routeObj = {
-      url: endpoint,
-      fn: (req, res) => {
-        fxn(req, res);
-      },
-      method: "GET",
-    };
-
-    this.__routes.push(routeObj);
-  }
-
-  post(endpoint, fxn) {
-    const routeObj = {
-      url: endpoint,
-      fn: (req, res) => {
-        fxn(req, res);
-      },
-      method: "POST",
-    };
-    this.__routes.push(routeObj);
+    this.get = addGETEnpoint.bind(this);
+    this.post = addPOSTEndpoint.bind(this);
   }
 
   getType() {
@@ -34,7 +15,7 @@ class NRAFRouter {
   }
 
   getRoutes() {
-    return this.__routes;
+    return this.__routers;
   }
 }
 

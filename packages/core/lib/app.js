@@ -1,16 +1,16 @@
 "use strict";
 
 const fs = require("fs");
-const url = require("url");
-const http = require("http");
 const path = require("path");
+const http = require("http");
 const NTE = require("@nraf/nte");
 const { promisify } = require("util");
-const { NRAF_ROUTER } = require("./constants");
 const {
   typeBasedParser,
+  get: addGETEnpoint,
+  use: expandRouter,
+  post: addPOSTEndpoint,
   EXT_MIME_TYPE_HEADER_MAP,
-  combineURLs,
 } = require("./helper");
 
 const readFile = promisify(fs.readFile);
@@ -20,8 +20,8 @@ class App {
     this.__publicResPath = null;
     this.__templateResPath = null;
 
+    this.__scopes = {};
     this.__routers = [];
-    this.__middlewares = [];
     this.__templateCache = {};
     this.__SET_TYPES = {
       VIEWS: "views",
@@ -29,10 +29,11 @@ class App {
     };
 
     this.app = http.createServer((req, res) => {
-      const URL = url.parse(req.url, true);
+      const baseURL = req.protocol + "://" + req.headers.host + "/";
+      const url = new URL(req.url, baseURL);
 
-      req.url = URL.pathname;
-      req.query = URL.query;
+      req.url = url.pathname;
+      req.query = Object.fromEntries(url.searchParams.entries());
 
       res.setHeader("Content-Type", "text/html");
       res.setHeader("Client", "Not-Really-A-Framework");
@@ -136,16 +137,47 @@ class App {
         dataFromReq += chunk.toString();
       });
 
-      this.__middlewares.forEach((callback) => {
-        callback(req, res, function () {});
-      });
-
       req.on("end", () => {
         req.body = typeBasedParser(req.headers["content-type"], dataFromReq);
         let m = this.match(this.__routers, req);
-        m(req, res);
+        if (m instanceof Function) {
+          m(req, res);
+        } else if (!m.scoped) {
+          m["fn"](req, res);
+        } else {
+          const key = m.scopeKey;
+          const pipeline = this.__scopes[key];
+          if (!pipeline) {
+            throw new Error("Unreachable");
+          }
+
+          for (let i = 0; i < pipeline.length; ++i) {
+            let obj = {
+              moveToNext: false,
+              err: null,
+            };
+
+            const f = pipeline[i];
+
+            f.call(null, req, res, () => {
+              obj.moveToNext = true;
+            });
+
+            if (!obj.moveToNext) return;
+          }
+
+          m["fn"](req, res);
+        }
       });
     });
+  }
+
+  get(endpoint, fxn) {
+    addGETEnpoint.call(this, endpoint, fxn);
+  }
+
+  post(endpoint, fxn) {
+    addPOSTEndpoint.call(this, endpoint, fxn);
   }
 
   match(appRoutes, incomingRequest) {
@@ -181,7 +213,7 @@ class App {
         }
         incomingRequest.params = routeParams;
 
-        return route["fn"];
+        return route;
       }
     }
 
@@ -197,28 +229,6 @@ class App {
     });
   }
 
-  get(endpoint, fxn) {
-    const routeObj = {
-      url: endpoint,
-      fn: (req, res) => {
-        fxn(req, res);
-      },
-      method: "GET",
-    };
-    this.__routers.push(routeObj);
-  }
-
-  post(endpoint, fxn) {
-    const routeObj = {
-      url: endpoint,
-      fn: (req, res) => {
-        fxn(req, res);
-      },
-      method: "POST",
-    };
-    this.__routers.push(routeObj);
-  }
-
   set(setType, value) {
     switch (setType) {
       case this.__SET_TYPES.VIEWS:
@@ -232,28 +242,8 @@ class App {
     }
   }
 
-  use(...args) {
-    const isRouterInjections = args?.[1]?.getType() === NRAF_ROUTER;
-    if (isRouterInjections) {
-      const baseEndpoint = args[0];
-      const routes = args?.[1]?.getRoutes();
-      if (baseEndpoint && routes) {
-        routes.forEach(({ url, method, fn }) => {
-          if (method === "GET") {
-            this.get(combineURLs(baseEndpoint, url), fn);
-          } else if (method === "POST") {
-            this.post(combineURLs(baseEndpoint, url), fn);
-          } else {
-            console.assert(false, "UNSUPPORTED METHOD");
-          }
-        });
-      } else {
-        console.assert(
-          router?.length !== 0,
-          `Unexpected routes collection ${args[1]}`
-        );
-      }
-    }
+  use(baseEndpoint, router) {
+    expandRouter.call(this, baseEndpoint, router);
   }
 
   serverPublicAssets(req, res) {
@@ -296,6 +286,37 @@ Refer to the documentation, to learn more.
       res.send("Not Found");
       res.end();
     }
+  }
+
+  scope(scopeKey, pipeline, fn) {
+    if (!scopeKey) {
+      throw new Error("Scope can't be created without names");
+    } else if (this.__scopes[scopeKey]) {
+      throw new Error("Scope with name already exists");
+    }
+
+    this.__scopes[scopeKey] = pipeline;
+
+    const newThis = {
+      ...this,
+      __isScoped: true,
+      __scopeKey: scopeKey,
+    };
+
+    const scoppedGET = addGETEnpoint.bind(newThis);
+    const scoppedPOST = addPOSTEndpoint.bind(newThis);
+
+    const SCOPE = {
+      get: scoppedGET,
+      post: scoppedPOST,
+      use: expandRouter.bind({
+        ...newThis,
+        get: scoppedGET,
+        post: scoppedPOST,
+      }),
+    };
+
+    fn(SCOPE);
   }
 }
 

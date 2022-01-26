@@ -2,10 +2,10 @@ const markup = `
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Hello, JSWorldConf!</title>
+    <title>JSWorldConf!</title>
   </head>
   <body>
-    <h1>Welcome, {{ user_name }}!!</h1>
+    <h1>Hello, {{ user_name }}!!</h1>
   </body>
 </html>
 `;
