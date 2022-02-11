@@ -140,18 +140,7 @@ class App {
       req.on("end", () => {
         // To support parsing data of modes which are not supported.
         req.originalData = dataFromReq;
-        const parsedData = typeBasedParser(
-          this.__publicResPath,
-          req.headers["content-type"],
-          dataFromReq
-        );
-
-        if (Array.isArray(parsedData)) {
-          req.body = parsedData?.[0] ?? {};
-          req.files = parsedData?.[1] ?? {};
-        } else {
-          req.body = parsedData;
-        }
+        req.body = typeBasedParser(req.headers["content-type"], dataFromReq);
         let m = this.match(this.__routers, req);
         if (m instanceof Function) {
           m(req, res);
