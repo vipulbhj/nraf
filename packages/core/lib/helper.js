@@ -8,6 +8,7 @@ const EXT_MIME_TYPE_HEADER_MAP = {
 };
 
 function typeBasedParser(type, data) {
+  if (!type) return null;
   if (type.startsWith("application/x-www-form-urlencoded")) {
     const urlSearchParam = new URLSearchParams(data);
     return Object.fromEntries(urlSearchParam.entries());
