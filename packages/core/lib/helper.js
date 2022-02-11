@@ -8,13 +8,10 @@ const EXT_MIME_TYPE_HEADER_MAP = {
 };
 
 function typeBasedParser(type, data) {
-  if (type === "application/x-www-form-urlencoded") {
+  if (type.startsWith("application/x-www-form-urlencoded")) {
     const urlSearchParam = new URLSearchParams(data);
     return Object.fromEntries(urlSearchParam.entries());
-  } else if (
-    type === "application/json;charset=utf-8" ||
-    type === "application/json"
-  ) {
+  } else if (type.startsWith("application/json")) {
     return JSON.parse(data);
   } else {
     return null;

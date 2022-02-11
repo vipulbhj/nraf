@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forms Example</title>
+    <style>
+      label {
+        display: block;
+        margin: 10px 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Simple GET Form</h1>
+    <form method="GET" action="/simple-get">
+      <label>Name</label>
+      <input name="name" type="text" />
+      <input type="submit" />
+    </form>
+
+    <hr />
+    <h1>Simple POST Form</h1>
+    <form method="POST" action="/simple-post">
+      <label>Name</label>
+      <input name="name" type="text" />
+      <input type="submit" />
+    </form>
+
+    <hr />
+    <h1>Multipart POST Form</h1>
+    <form method="POST" action="/multipart-post" enctype="multipart/form-data">
+      <label>
+        Name
+        <input name="name" type="text" />
+      </label>
+      <label>
+        P1
+        <input name="p1" type="file" />
+      </label>
+      <!-- <label>
+        P2
+        <input name="p2" type="file" />
+      </label>
+      <label>
+        P3
+        <input name="p3" type="file" />
+      </label> -->
+      <input type="submit" />
+    </form>
+  </body>
+</html>
