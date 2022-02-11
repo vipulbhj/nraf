@@ -20,17 +20,27 @@ const homePage = `
   {{ include("layout/footer.nraf") }}
 `;
 
-const exmapleIncludes = new Template(homePage);
+const markup = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JSWorldConf!</title>
+  </head>
+  <body>
+    <h1>Hello, {{ user_name }}!!</h1>
+    <h1>
+      Hola, {{ 
+        user_name 
+      }}!!
+    </h1>
+  </body>
+</html>
+`;
+
+const exmapleIncludes = new Template(markup);
 exmapleIncludes.compile();
 const exmapleIncludesHtml = exmapleIncludes.render({
-  include: (path) => {
-    // This function needs to give me a template
-    const t = new Template(footerPartial);
-    t.compile();
-    return t.render({
-      loggedIn: true,
-    });
-  },
+  user_name: "Foo",
 });
 
 console.log(exmapleIncludesHtml);

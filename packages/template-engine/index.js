@@ -53,7 +53,7 @@ class Template {
      * {# COMMENT #} -> Write a comment, get's ignored when parsed.
      *
      */
-    const re = new RegExp(/({{.*?}}|{%.*?%}|{#.*?#})/, "igm");
+    const re = new RegExp(/({{.*?}}|{%.*?%}|{#.*?#})/, "igms");
     return this.templateStr.split(re);
   }
 
