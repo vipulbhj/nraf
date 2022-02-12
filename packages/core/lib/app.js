@@ -137,7 +137,7 @@ class App {
         dataFromReq += chunk.toString();
       });
 
-      req.on("end", () => {
+      req.on("end", async () => {
         // To support parsing data of modes which are not supported.
         req.originalData = dataFromReq;
         req.body = typeBasedParser(req.headers["content-type"], dataFromReq);
@@ -161,7 +161,7 @@ class App {
 
             const f = pipeline[i];
 
-            f.call(null, req, res, () => {
+            await f.call(null, req, res, () => {
               obj.moveToNext = true;
             });
 
