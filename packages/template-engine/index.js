@@ -84,6 +84,8 @@ class Template {
 
     const tokens = this.tokenize();
 
+    let forLoopDepth = 0;
+
     for (const token of tokens) {
       if (token.startsWith("{#")) {
         // Template Comment, we will just ignore
@@ -117,6 +119,8 @@ class Template {
          */
         const keywords = expr.split(" ");
         if (keywords[0] === "for") {
+          ++forLoopDepth;
+
           if (keywords.length !== 4 && keywords.length !== 5) {
             throw new Error("Sytax error in ", keywords);
           }
@@ -139,7 +143,10 @@ class Template {
             throw new Error("Sytax error in ", keywords);
           }
 
-          globalVars.add(keywords[1]);
+          if (forLoopDepth === 0) {
+            globalVars.add(keywords[1]);
+          }
+
           STACK.push(keywords[0]);
           code.addLine(`if(${keywords[1]}) {`);
         } else if (keywords[0] === "elif") {
@@ -152,7 +159,10 @@ class Template {
             throw new Error("Syntax Error, can't use elif without if");
           }
 
-          globalVars.add(keywords[1]);
+          if (forLoopDepth === 0) {
+            globalVars.add(keywords[1]);
+          }
+
           STACK.push(keywords[0]);
           code.addLine(`} else if(${keywords[1]}) {`);
         } else if (keywords[0] === "else") {
@@ -172,6 +182,8 @@ class Template {
 
           code.addLine(`} else {`);
         } else if (keywords[0] === "endfor") {
+          --forLoopDepth;
+
           if (keywords.length !== 1) {
             throw new Error("Syntax error, invalid use", keywords);
           }
