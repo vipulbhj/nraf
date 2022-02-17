@@ -13,13 +13,15 @@ const {
   EXT_MIME_TYPE_HEADER_MAP,
 } = require("./helper");
 
+const { parse: cookieParse, serialize: cookieSerialize } = require("./cookie");
+
 const readFile = promisify(fs.readFile);
 
 class App {
-  constructor() {
+  constructor(showWarnings) {
+    this.showWarnings = showWarnings || false;
     this.__publicResPath = null;
     this.__templateResPath = null;
-
     this.__scopes = {};
     this.__routers = [];
     this.__templateCache = {};
@@ -29,18 +31,40 @@ class App {
     };
 
     this.app = http.createServer((req, res) => {
+      const cookiesForThisReq = [];
+
       const baseURL = req.protocol + "://" + req.headers.host + "/";
       const url = new URL(req.url, baseURL);
 
       req.url = url.pathname;
       req.query = Object.fromEntries(url.searchParams.entries());
 
-      res.setHeader("Content-Type", "text/html");
-      res.setHeader("Client", "Not-Really-A-Framework");
-
-      res.setStatus = (code) => {
+      // Set Status
+      res.status = (code) => {
         res.statusCode = code;
+        return res;
       };
+
+      // Set Headers
+      res.header = (header, value) => {
+        res.setHeader(header, value);
+        return res;
+      };
+
+      // Support of parsing incoming and sending cookies
+      req.cookie = cookieParse(req.headers.cookie || "");
+
+      res.cookie = (name, value, opts) => {
+        cookiesForThisReq.push(cookieSerialize(name, value, opts));
+        return res;
+      };
+
+      // Basic Headers
+      res.header("Content-Type", "text/html");
+      res.header("Client", "Not-Really-A-Framework");
+
+      // Responsible for Sending Cookies
+      res.header("Set-Cookie", cookiesForThisReq);
 
       res.send = (data) => {
         res.write(data);
@@ -48,18 +72,16 @@ class App {
       };
 
       res.json = (obj) => {
-        res.setHeader("content-type", "application/json; charset=utf-8");
-        res.write(JSON.stringify(obj));
-        res.end();
+        res
+          .header("content-type", "application/json; charset=utf-8")
+          .send(JSON.stringify(obj));
       };
 
       res.redirect = (location) => {
         if (!location) {
           throw new Error("Error: location parameter not supplied");
         }
-        res.setStatus(302);
-        res.setHeader("Location", location);
-        res.end();
+        res.status(302).header("Location", location).end();
       };
 
       res.render = (name, renderContext) => {
@@ -98,17 +120,16 @@ class App {
 
         // Check if file exists.
         if (!fs.existsSync(absTemplatePath)) {
-          res.setStatus(404);
-          res.setHeader("Content-Type", "text/html");
-          res.send("<h1>Error: 404. Page Not Found</h1>");
-          res.end();
+          res
+            .status(404)
+            .header("Content-Type", "text/html")
+            .send("<h1>Error: 404. Page Not Found</h1>");
         }
 
         const cachedRenderer = this.__templateCache[absTemplatePath];
         if (process.env.NODE_ENV === "PRODUCTION" && cachedRenderer) {
           const html = cachedRenderer(renderContext);
           res.send(html);
-          res.end();
         } else {
           readFile(absTemplatePath, { encoding: "utf8", flag: "r" })
             .then((data) => {
@@ -120,7 +141,6 @@ class App {
                 include: includePartial,
               });
               res.send(html);
-              res.end();
             })
             .catch((err) => {
               throw new Error(err);
@@ -250,7 +270,8 @@ class App {
 
   serverPublicAssets(req, res) {
     if (!this.__publicResPath) {
-      console.error(`
+      this.showWarnings &&
+        console.error(`
 WARNING:      
 *****
 Got a request for "${req.url}" asset, but can't serve public assets, as public asset path was never set.
@@ -263,9 +284,7 @@ Refer to the documentation, to learn more.
 *****      
       `);
 
-      res.setStatus(401);
-      res.send("Not Found");
-      return res.end();
+      return res.status(401).send("Not Found");
     }
 
     const absolutePath = path.join(this.__publicResPath, req.url);
@@ -273,20 +292,17 @@ Refer to the documentation, to learn more.
       const ext = path.extname(absolutePath);
       const header = EXT_MIME_TYPE_HEADER_MAP[ext];
       if (header) {
-        res.setHeader("Content-Type", header);
+        res.header("Content-Type", header);
       }
       readFile(absolutePath, { flag: "r" })
         .then((data) => {
           res.send(data);
-          res.end();
         })
         .catch((err) => {
           throw err;
         });
     } else {
-      res.setStatus(401);
-      res.send("Not Found");
-      res.end();
+      res.status(401).send("Not Found");
     }
   }
 
