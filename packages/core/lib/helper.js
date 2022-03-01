@@ -36,7 +36,16 @@ function get(endpoint, fxn) {
     },
   };
 
+  const optionsObj = {
+    url: endpoint,
+    method: "OPTIONS",
+    scoped: this.__isScoped || false,
+    scopeKey: this.__scopeKey || null,
+    fn: () => {},
+  };
+
   this.__routers.push(routeObj);
+  this.__routers.push(optionsObj);
 }
 
 function post(endpoint, fxn) {
@@ -50,7 +59,16 @@ function post(endpoint, fxn) {
     },
   };
 
+  const optionsObj = {
+    url: endpoint,
+    method: "OPTIONS",
+    scoped: this.__isScoped || false,
+    scopeKey: this.__scopeKey || null,
+    fn: () => {},
+  };
+
   this.__routers.push(routeObj);
+  this.__routers.push(optionsObj);
 }
 
 function use(baseEndpoint, router) {

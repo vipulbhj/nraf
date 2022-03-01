@@ -162,6 +162,11 @@ class App {
         req.originalData = dataFromReq;
         req.body = typeBasedParser(req.headers["content-type"], dataFromReq);
         let m = this.match(this.__routers, req);
+
+        if (!m) {
+          res.status(404).send();
+        }
+
         if (m instanceof Function) {
           m(req, res);
         } else if (!m.scoped) {
@@ -239,7 +244,11 @@ class App {
       }
     }
 
-    return this.serverPublicAssets.bind(this);
+    if (incomingRequest.method === "GET") {
+      return this.serverPublicAssets.bind(this);
+    }
+
+    return null;
   }
 
   listen(PORT, callback = () => {}) {
