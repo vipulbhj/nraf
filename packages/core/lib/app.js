@@ -33,7 +33,9 @@ class App {
     this.app = http.createServer((req, res) => {
       const cookiesForThisReq = [];
 
+      req.protocol = req.socket.encrypted ? "https" : "http";
       const baseURL = req.protocol + "://" + req.headers.host + "/";
+      console.log(baseURL);
       const url = new URL(req.url, baseURL);
 
       req.url = url.pathname;
