@@ -8,4 +8,4 @@ NTE takes inspiation from template engines like, `Nunjucks` and in-turn `Jinja2`
 
 - [x] Statements
 - [x] Expressions for Conditionals
-- [x] Partials (Coming Soon)
+- [x] Partials
